@@ -9,101 +9,103 @@
         <div class="page-content-con">
             <loading v-if="loading"></loading>
             <div v-else>
-                <div class="column is-one-quarter">
-                        <div class="container">
-                            <button v-on:click='togglePercent' class="button">$ or %</button>
-                            <!--<input class="input" type="text" placeholder="Search...">-->
-                        </div>
+                <div class="container">
+                    <div class="column">
+                        <!--TODO: Make sticky-->
+                        <button v-on:click='togglePercent' class="button is-info is-large">$ or %</button>
+                        <!--<input class="input" type="text" placeholder="Search...">-->
                     </div>
-                <div class="columns is-multiline">
-                    <div v-for="company in companies" :key="company.symbol" class="company column is-one-third">
-                        <div class="card">
-                            <div class="card-content">
-                                <div v-if="company.change > 0">
-                                    <div class="indicator-area">
-                                        <span v-if="showPercent === true" class="change-amount change-amount-gain">{{(company.changePercent*100).toFixed(3)}} %</span>
-                                        <span v-if="showPercent === false" class="change-amount change-amount-gain">+{{company.change}} </span>
-                                        <div class="indicator gain"></div>
-                                    </div>
 
-                                    <p class="title">
-                                        {{company.symbol}}
-                                    </p>
-                                    <p class="subtitle">
-                                        {{company.companyName}}
-                                    </p>
-                                    <div class="columns">
-                                        <div class="column">
-                                            <div>Open
-                                                <money :value="company.open"></money>
+                    <div class="columns is-multiline">
+                        <div v-for="company in companies" :key="company.symbol" class="company column is-one-third">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div v-if="company.change > 0">
+                                        <div class="indicator-area">
+                                            <span v-if="showPercent === true" class="change-amount change-amount-gain">{{(company.changePercent*100).toFixed(3)}} %</span>
+                                            <span v-if="showPercent === false" class="change-amount change-amount-gain">+{{company.change}} </span>
+                                            <div class="indicator gain"></div>
+                                        </div>
+
+                                        <p class="title">
+                                            {{company.symbol}}
+                                        </p>
+                                        <p class="subtitle">
+                                            {{company.companyName}}
+                                        </p>
+                                        <div class="columns">
+                                            <div class="column">
+                                                <div>Open
+                                                    <money :value="company.open"></money>
+                                                </div>
+                                                <div>Close
+                                                    <money :value="company.close"></money>
+                                                </div>
+                                                <timestamp :value="company.openTime"></timestamp> -
+                                                <timestamp :value="company.closeTime"></timestamp>
                                             </div>
-                                            <div>Close
-                                                <money :value="company.close"></money>
-                                            </div>
-                                            <timestamp :value="company.openTime"></timestamp> -
-                                            <timestamp :value="company.closeTime"></timestamp>
                                         </div>
                                     </div>
-                                </div>
-                                <div v-if="company.change < 0">
-                                    <div class="indicator-area">
-                                        <span v-if="showPercent === true" class="change-amount change-amount-loss">{{(company.changePercent*100).toFixed(3)}} %</span>
-                                        <span v-if="showPercent === false" class="change-amount change-amount-loss">{{company.change}}</span>
-                                        <div class="indicator loss"></div>  
-                                    </div>
+                                    <div v-if="company.change < 0">
+                                        <div class="indicator-area">
+                                            <span v-if="showPercent === true" class="change-amount change-amount-loss">{{(company.changePercent*100).toFixed(3)}} %</span>
+                                            <span v-if="showPercent === false" class="change-amount change-amount-loss">{{company.change}}</span>
+                                            <div class="indicator loss"></div>
+                                        </div>
 
-                                    <p class="title">
-                                        {{company.symbol}}
-                                    </p>
-                                    <p class="subtitle">
-                                        {{company.companyName}}
-                                    </p>
-                                    <div class="columns">
-                                        <div class="column">
-                                            <div>Open
-                                                <money :value="company.open"></money>
+                                        <p class="title">
+                                            {{company.symbol}}
+                                        </p>
+                                        <p class="subtitle">
+                                            {{company.companyName}}
+                                        </p>
+                                        <div class="columns">
+                                            <div class="column">
+                                                <div>Open
+                                                    <money :value="company.open"></money>
+                                                </div>
+                                                <div>Close
+                                                    <money :value="company.close"></money>
+                                                </div>
+                                                <timestamp :value="company.openTime"></timestamp> -
+                                                <timestamp :value="company.closeTime"></timestamp>
                                             </div>
-                                            <div>Close
-                                                <money :value="company.close"></money>
-                                            </div>
-                                            <timestamp :value="company.openTime"></timestamp> -
-                                            <timestamp :value="company.closeTime"></timestamp>
                                         </div>
                                     </div>
-                                </div>
-                                <div v-if="company.change === 0">
-                                    <div class="indicator-area">
-                                        <span v-if="showPercent === true" class="change-amount change-amount-even">{{(company.changePercent*100).toFixed(3)}} %</span>
-                                        <span v-if="showPercent === false" class="change-amount change-amount-even">{{company.change.toFixed(2)}}</span>
-                                        <div class="indicator even"></div>
-                                    </div>
+                                    <div v-if="company.change === 0">
+                                        <div class="indicator-area">
+                                            <span v-if="showPercent === true" class="change-amount change-amount-even">{{(company.changePercent*100).toFixed(3)}} %</span>
+                                            <span v-if="showPercent === false" class="change-amount change-amount-even">{{company.change.toFixed(2)}}</span>
+                                            <div class="indicator even"></div>
+                                        </div>
 
-                                    <p class="title">
-                                        {{company.symbol}}
-                                    </p>
-                                    <p class="subtitle">
-                                        {{company.companyName}}
-                                    </p>
-                                    <div class="columns">
-                                        <div class="column">
-                                            <div>Open
-                                                <money :value="company.open"></money>
+                                        <p class="title">
+                                            {{company.symbol}}
+                                        </p>
+                                        <p class="subtitle">
+                                            {{company.companyName}}
+                                        </p>
+                                        <div class="columns">
+                                            <div class="column">
+                                                <div>Open
+                                                    <money :value="company.open"></money>
+                                                </div>
+                                                <div>Close
+                                                    <money :value="company.close"></money>
+                                                </div>
+                                                <timestamp :value="company.openTime"></timestamp> -
+                                                <timestamp :value="company.closeTime"></timestamp>
                                             </div>
-                                            <div>Close
-                                                <money :value="company.close"></money>
-                                            </div>
-                                            <timestamp :value="company.openTime"></timestamp> -
-                                            <timestamp :value="company.closeTime"></timestamp>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!--<h5 class="heading is-size-5">{{company.symbol}} : <small class="is-size-7">{{company.companyName}}</small></h5>
-                                          <div>Open <money :value="company.open"></money></div>
-                                          <div>Close <money :value="company.close"></money></div>
-                                          <timestamp :value="company.openTime"></timestamp> - <timestamp :value="company.closeTime"></timestamp>-->
+                            <!--<h5 class="heading is-size-5">{{company.symbol}} : <small class="is-size-7">{{company.companyName}}</small></h5>
+                                              <div>Open <money :value="company.open"></money></div>
+                                              <div>Close <money :value="company.close"></money></div>
+                                              <timestamp :value="company.openTime"></timestamp> - <timestamp :value="company.closeTime"></timestamp>-->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,8 +125,8 @@ export default {
             showPercent: false
         };
     },
-    methods:{
-        togglePercent: function(){
+    methods: {
+        togglePercent: function() {
             this.showPercent = !this.showPercent
         }
     },
@@ -175,15 +177,12 @@ export default {
 // .hover-card-gain:hover {
 //     box-shadow: 0 2px 3px rgb(0, 128, 0), 0 0 0 1px rgba(10, 10, 10, 0.1);
 // }
-
 // .hover-card-loss:hover {
 //     box-shadow: 0 2px 3px red, 0 0 0 1px rgba(10, 10, 10, 0.1);
 // }
-
 // .hover-card-even:hover {
 //     box-shadow: 0 2px 3px grey, 0 0 0 1px rgba(10, 10, 10, 0.1);
 // }
-
 .change-amount {
     padding: 1rem;
     font-weight: bold;
@@ -198,7 +197,7 @@ export default {
     color: #ce2b2b;
 }
 
-.change-amount-even{
+.change-amount-even {
     color: grey;
 }
 </style>
