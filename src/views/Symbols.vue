@@ -13,120 +13,76 @@
                     <div class="column">
                         <!--TODO: Make sticky-->
                         <button v-on:click='togglePercent' class="button is-info is-large">$ or %</button>
-                        <!--<input class="input" type="text" placeholder="Search...">-->
+                        <div class="column">
+                            <input v-model="searchInput" class="input" type="text" placeholder="Search...">
+                            <!-- <p>Filter is: {{ filtered }}</p> -->
+                        </div>
                     </div>
 
                     <div class="columns is-multiline">
                         <div v-for="company in companies" :key="company.symbol" class="company column is-one-third">
                             <div class="card">
                                 <div class="card-content">
-                                    <div v-if="company.change > 0">
-                                        <div class="indicator-area">
-                                            <span v-if="showPercent === true" class="change-amount change-amount-gain">{{(company.changePercent*100).toFixed(3)}} %</span>
-                                            <span v-if="showPercent === false" class="change-amount change-amount-gain">+{{company.change}} </span>
-                                            <div class="indicator gain"></div>
-                                        </div>
-
-                                        <p class="title">
-                                            {{company.symbol}}
-                                        </p>
-                                        <p class="subtitle">
-                                            {{company.companyName}}
-                                        </p>
-                                        <div class="columns">
-                                            <div class="column">
-                                                <div>Open
-                                                    <money :value="company.open"></money>
-                                                </div>
-                                                <div>Close
-                                                    <money :value="company.close"></money>
-                                                </div>
-                                                <timestamp :value="company.openTime"></timestamp> -
-                                                <timestamp :value="company.closeTime"></timestamp>
-                                            </div>
-                                        </div>
+                                    <div v-if="company.change > 0" class="indicator-area">
+                                        <span v-if="showPercent === true" class="change-amount change-amount-gain">{{(company.changePercent*100).toFixed(3)}} %</span>
+                                        <span v-if="showPercent === false" class="change-amount change-amount-gain">+{{company.change}} </span>
+                                        <div class="indicator gain"></div>
                                     </div>
-                                    <div v-if="company.change < 0">
-                                        <div class="indicator-area">
-                                            <span v-if="showPercent === true" class="change-amount change-amount-loss">{{(company.changePercent*100).toFixed(3)}} %</span>
-                                            <span v-if="showPercent === false" class="change-amount change-amount-loss">{{company.change}}</span>
-                                            <div class="indicator loss"></div>
-                                        </div>
 
-                                        <p class="title">
-                                            {{company.symbol}}
-                                        </p>
-                                        <p class="subtitle">
-                                            {{company.companyName}}
-                                        </p>
-                                        <div class="columns">
-                                            <div class="column">
-                                                <div>Open
-                                                    <money :value="company.open"></money>
-                                                </div>
-                                                <div>Close
-                                                    <money :value="company.close"></money>
-                                                </div>
-                                                <timestamp :value="company.openTime"></timestamp> -
-                                                <timestamp :value="company.closeTime"></timestamp>
-                                            </div>
-                                        </div>
+                                    <div v-if="company.change < 0" class="indicator-area">
+                                        <span v-if="showPercent === true" class="change-amount change-amount-gain">{{(company.changePercent*100).toFixed(3)}} %</span>
+                                        <span v-if="showPercent === false" class="change-amount change-amount-gain">+{{company.change}} </span>
+                                        <div class="indicator gain"></div>
+                                    </div> 
+
+                                    <div v-if="company.change === 0" class="indicator-area">
+                                        <span v-if="showPercent === true" class="change-amount change-amount-even">{{(company.changePercent*100).toFixed(3)}} %</span>
+                                        <span v-if="showPercent === false" class="change-amount change-amount-even">{{company.change.toFixed(2)}}</span>
+                                        <div class="indicator even"></div>
                                     </div>
-                                    <div v-if="company.change === 0">
-                                        <div class="indicator-area">
-                                            <span v-if="showPercent === true" class="change-amount change-amount-even">{{(company.changePercent*100).toFixed(3)}} %</span>
-                                            <span v-if="showPercent === false" class="change-amount change-amount-even">{{company.change.toFixed(2)}}</span>
-                                            <div class="indicator even"></div>
-                                        </div>
 
-                                        <p class="title">
-                                            {{company.symbol}}
-                                        </p>
-                                        <p class="subtitle">
-                                            {{company.companyName}}
-                                        </p>
-                                        <div class="columns">
-                                            <div class="column">
-                                                <div>Open
-                                                    <money :value="company.open"></money>
-                                                </div>
-                                                <div>Close
-                                                    <money :value="company.close"></money>
-                                                </div>
-                                                <timestamp :value="company.openTime"></timestamp> -
-                                                <timestamp :value="company.closeTime"></timestamp>
+                                    <p class="title">
+                                        {{company.symbol}}
+                                    </p>
+                                    <p class="subtitle">
+                                        {{company.companyName}}
+                                    </p>
+                                    <div class="columns">
+                                        <div class="column">
+                                            <div>Open
+                                                <money :value="company.open"></money>
                                             </div>
+                                            <div>Close
+                                                <money :value="company.close"></money>
+                                            </div>
+                                            <timestamp :value="company.openTime"></timestamp> -
+                                            <timestamp :value="company.closeTime"></timestamp>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!--<h5 class="heading is-size-5">{{company.symbol}} : <small class="is-size-7">{{company.companyName}}</small></h5>
-                                              <div>Open <money :value="company.open"></money></div>
-                                              <div>Close <money :value="company.close"></money></div>
-                                              <timestamp :value="company.openTime"></timestamp> - <timestamp :value="company.closeTime"></timestamp>-->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
 <script>
 import API from '../api/IEX';
 export default {
-    name: "Symbols",
+    name : "Symbols",
     data() {
         return {
-            loading: true,
-            companies: [],
-            showPercent: false
+            loading : true,
+            companies : [],
+            showPercent : true,
+            searchInput: ""
         };
     },
-    methods: {
-        togglePercent: function() {
+    methods : {
+        togglePercent : function() {
             this.showPercent = !this.showPercent
         }
     },
@@ -135,7 +91,7 @@ export default {
             this.companies = response.data;
         }).finally(() => {
             this.loading = false;
-            this.showPercent = true;
+            // this.showPercent = true;
         });
     },
 }
