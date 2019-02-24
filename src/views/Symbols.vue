@@ -89,7 +89,8 @@ export default {
     computed: {
         filteredCompanies() {
             return this.companies.filter(company => {
-                return company.symbol.toLowerCase().includes(this.searchInput.toLowerCase())
+                return company.symbol.toLowerCase().includes(this.searchInput.toLowerCase()) ||
+                        company.companyName.toLowerCase().includes(this.searchInput.toLowerCase())
             })
         }
     },
