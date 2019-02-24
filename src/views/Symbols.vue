@@ -17,6 +17,13 @@
                             <input v-model="searchInput" class="input" type="text" placeholder="Search...">
                             <!-- <p>Filter is: {{ filtered }}</p> -->
                         </div>
+                        <p>Primary Exchange:</p>
+                        <div class="select">
+                            <select v-model="primaryExchangeFilter">
+                                <option value= "">All Exchanges</option>
+                                <option v-for="exchange in exchanges" :key="exchange">{{exchange}}</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="columns is-multiline">
@@ -71,6 +78,8 @@
 
 <script>
 import API from '../api/IEX';
+import uniq from 'lodash/uniq'
+
 export default {
     name : "Symbols",
     data() {
@@ -78,7 +87,9 @@ export default {
             loading : true,
             companies : [],
             showPercent : true,
-            searchInput: ""
+            searchInput: "",
+            primaryExchangeFilter: ""
+            // marketStatus: "all"
         };
     },
     methods : {
@@ -89,9 +100,13 @@ export default {
     computed: {
         filteredCompanies() {
             return this.companies.filter(company => {
-                return company.symbol.toLowerCase().includes(this.searchInput.toLowerCase()) ||
-                        company.companyName.toLowerCase().includes(this.searchInput.toLowerCase())
+                return (company.symbol.toLowerCase().includes(this.searchInput.toLowerCase()) ||
+                        company.companyName.toLowerCase().includes(this.searchInput.toLowerCase())) &&
+                        company.primaryExchange.toLowerCase().includes(this.primaryExchangeFilter.toLowerCase())
             })
+        },
+        exchanges() {
+            return uniq(this.companies.map( p => p.primaryExchange))
         }
     },
     beforeMount() {
