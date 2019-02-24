@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="columns is-multiline">
-                        <div v-for="company in companies" :key="company.symbol" class="company column is-one-third">
+                        <div v-for="company in filteredCompanies" :key="company.symbol" class="company column is-one-third">
                             <div class="card">
                                 <div class="card-content">
                                     <div v-if="company.change > 0" class="indicator-area">
@@ -84,6 +84,13 @@ export default {
     methods : {
         togglePercent : function() {
             this.showPercent = !this.showPercent
+        }
+    },
+    computed: {
+        filteredCompanies() {
+            return this.companies.filter(company => {
+                return company.symbol.toLowerCase().includes(this.searchInput.toLowerCase())
+            })
         }
     },
     beforeMount() {
