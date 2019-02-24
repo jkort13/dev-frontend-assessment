@@ -50,7 +50,7 @@
                             </div>
                         </div>
                     </div>
-                                            
+                            
                     <div class="columns is-multiline">
                         <div v-for="company in filteredCompanies" :key="company.symbol" class="company column is-one-third">
                             <div class="card company-card">
@@ -123,7 +123,7 @@ export default {
             this.showPercent = !this.showPercent
         }
     },
-    computed: {
+    computed : {
         orderedCompanies() {
             if (this.sortOrder === 'asc' && this.showPercent === false)
                 return _.orderBy(this.companies, "change", ['asc'])
@@ -136,9 +136,9 @@ export default {
         },
         filteredCompanies() {
             return this.orderedCompanies.filter(company => {
-                return (company.symbol.toLowerCase().includes(this.searchInput.toLowerCase()) ||
-                        company.companyName.toLowerCase().includes(this.searchInput.toLowerCase())) &&
-                        company.primaryExchange.toLowerCase().includes(this.primaryExchangeFilter.toLowerCase())
+                return (company.symbol.toLowerCase().includes(this.searchInput.toLowerCase())
+                        ||company.companyName.toLowerCase().includes(this.searchInput.toLowerCase()))
+                        && company.primaryExchange.toLowerCase().includes(this.primaryExchangeFilter.toLowerCase())
             })
         },
         exchanges() {
