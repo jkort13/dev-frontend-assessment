@@ -10,25 +10,50 @@
             <loading v-if="loading"></loading>
             <div v-else>
                 <div class="container">
-                    <div class="column">
-                        <!--TODO: Make sticky-->
-                        <button v-on:click='togglePercent' class="button is-info is-large">$ or %</button>
-                        <div class="column">
-                            <input v-model="searchInput" class="input" type="text" placeholder="Search...">
-                            <!-- <p>Filter is: {{ filtered }}</p> -->
-                        </div>
-                        <p>Primary Exchange:</p>
-                        <div class="select">
-                            <select v-model="primaryExchangeFilter">
-                                <option value= "">All Exchanges</option>
-                                <option v-for="exchange in exchanges" :key="exchange">{{exchange}}</option>
-                            </select>
+                    <div class="columns is-centered">
+                        <div class="column is-two-thirds">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="content">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <p>Search:</p>
+                                                <input v-model="searchInput" class="input" type="text" placeholder="Search...">
+                                            </div>
+                                            <div class="column">
+                                                <p>Primary Exchange:</p>
+                                                <div class="select">
+                                                    <select v-model="primaryExchangeFilter">
+                                                        <option value="">All Exchanges</option>
+                                                        <option v-for="exchange in exchanges" :key="exchange">{{exchange}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="column">
+                                                <p>Sort by:</p>
+                                                <div class="select">
+                                                    <select v-model="sortOrder">
+                                                        <option value="desc" selected>Gains</option>
+                                                        <option value="asc">Losses</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="column">
+                                                <p>&nbsp;</p>
+                                                <div>
+                                                    <button v-on:click='togglePercent' class="button is-info">Toggle Percents</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
+                                            
                     <div class="columns is-multiline">
                         <div v-for="company in filteredCompanies" :key="company.symbol" class="company column is-one-third">
-                            <div class="card">
+                            <div class="card company-card">
                                 <div class="card-content">
                                     <div v-if="company.change > 0" class="indicator-area">
                                         <span v-if="showPercent === true" class="change-amount change-amount-gain">{{(company.changePercent*100).toFixed(3)}} %</span>
@@ -37,9 +62,9 @@
                                     </div>
 
                                     <div v-if="company.change < 0" class="indicator-area">
-                                        <span v-if="showPercent === true" class="change-amount change-amount-gain">{{(company.changePercent*100).toFixed(3)}} %</span>
-                                        <span v-if="showPercent === false" class="change-amount change-amount-gain">+{{company.change}} </span>
-                                        <div class="indicator gain"></div>
+                                        <span v-if="showPercent === true" class="change-amount change-amount-loss">{{(company.changePercent*100).toFixed(3)}} %</span>
+                                        <span v-if="showPercent === false" class="change-amount change-amount-loss">{{company.change}} </span>
+                                        <div class="indicator loss"></div>
                                     </div> 
 
                                     <div v-if="company.change === 0" class="indicator-area">
@@ -78,6 +103,7 @@
 
 <script>
 import API from '../api/IEX';
+import _ from 'lodash';
 import uniq from 'lodash/uniq'
 
 export default {
@@ -87,9 +113,9 @@ export default {
             loading : true,
             companies : [],
             showPercent : true,
-            searchInput: "",
-            primaryExchangeFilter: ""
-            // marketStatus: "all"
+            searchInput : "",
+            primaryExchangeFilter : "",
+            sortOrder : "desc"
         };
     },
     methods : {
@@ -98,8 +124,18 @@ export default {
         }
     },
     computed: {
+        orderedCompanies() {
+            if (this.sortOrder === 'asc' && this.showPercent === false)
+                return _.orderBy(this.companies, "change", ['asc'])
+            else if (this.sortOrder === 'desc' && this.showPercent === false)
+                return _.orderBy(this.companies, "change", ['desc'])
+            else if (this.sortOrder === 'asc' && this.showPercent === true)
+                return _.orderBy(this.companies, "changePercent", ['asc'])
+            else if (this.sortOrder === 'desc' && this.showPercent === true)
+                return _.orderBy(this.companies, "changePercent", ['desc'])
+        },
         filteredCompanies() {
-            return this.companies.filter(company => {
+            return this.orderedCompanies.filter(company => {
                 return (company.symbol.toLowerCase().includes(this.searchInput.toLowerCase()) ||
                         company.companyName.toLowerCase().includes(this.searchInput.toLowerCase())) &&
                         company.primaryExchange.toLowerCase().includes(this.primaryExchangeFilter.toLowerCase())
@@ -107,14 +143,14 @@ export default {
         },
         exchanges() {
             return uniq(this.companies.map( p => p.primaryExchange))
-        }
+        },
+
     },
     beforeMount() {
         API.getComputerHardwareCompanies().then(response => {
             this.companies = response.data;
         }).finally(() => {
             this.loading = false;
-            // this.showPercent = true;
         });
     },
 }
@@ -153,15 +189,6 @@ export default {
     background-color: grey;
 }
 
-// .hover-card-gain:hover {
-//     box-shadow: 0 2px 3px rgb(0, 128, 0), 0 0 0 1px rgba(10, 10, 10, 0.1);
-// }
-// .hover-card-loss:hover {
-//     box-shadow: 0 2px 3px red, 0 0 0 1px rgba(10, 10, 10, 0.1);
-// }
-// .hover-card-even:hover {
-//     box-shadow: 0 2px 3px grey, 0 0 0 1px rgba(10, 10, 10, 0.1);
-// }
 .change-amount {
     padding: 1rem;
     font-weight: bold;
@@ -178,5 +205,9 @@ export default {
 
 .change-amount-even {
     color: grey;
+}
+
+.company-card {
+    min-height: 200px;
 }
 </style>
